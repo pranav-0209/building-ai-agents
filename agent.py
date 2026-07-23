@@ -1,6 +1,7 @@
-from langchain_core.messages import (HumanMessage, SystemMessage, ToolMessage)
+from langchain_core.messages import (HumanMessage, ToolMessage)
 
-from config import (get_llm, SUMMARY_TRIGGER, WINDOW_SIZE)
+from config import (get_llm)
+from memory import MemoryManager
 from tools import TOOLS
 
 llm = get_llm()
@@ -12,23 +13,21 @@ tool_map = {
     for tool in TOOLS
 }
 
-messages = [
-    SystemMessage(
-        content="""You are a helpful AI assistant.Use tools whenever necessary."""),
-]
-
+memory = MemoryManager()
 
 def run_agent(user_input: str):
 
-    messages.append(
+    memory.add(
         HumanMessage(content=user_input)
     )
 
+    memory.update_summary()
+
     while True:
 
-        response = llm_with_tools.invoke(messages)
+        response = llm_with_tools.invoke(memory.get_messages())
 
-        messages.append(response)
+        memory.add(response)
 
         if not response.tool_calls:
             return response.content
@@ -38,7 +37,7 @@ def run_agent(user_input: str):
             tool = tool_map.get(tool_call["name"])
 
             if tool is None:
-                messages.append(
+                memory.add(
                     ToolMessage(content=f"Tool not found: {tool_call['name']}",
                                 tool_call_id=tool_call["id"])
                 )
@@ -53,6 +52,8 @@ def run_agent(user_input: str):
 
                 result = str(e)
 
-            messages.append(
+            memory.add(
                 ToolMessage(content=result, tool_call_id=tool_call["id"])
             )
+
+            memory.update_summary()
