@@ -1,9 +1,9 @@
 import os
 import json
 
-from langchain_core.messages import (
-    SystemMessage, HumanMessage, AIMessage, ToolMessage)
-from config import (WINDOW_SIZE, SUMMARY_TRIGGER, MEMORY_FILE, get_llm)
+from langchain_core.messages import SystemMessage
+from config import (WINDOW_SIZE, SUMMARY_TRIGGER, get_llm)
+from repository import MemoryRepository
 
 llm = get_llm()
 
@@ -15,17 +15,15 @@ class MemoryManager:
         self.system_message = SystemMessage(
             content="You are a helpful AI assistant. Use tools whenever necessary.")
 
-        self.summary_message = None
+        self.repository = MemoryRepository()
 
-        self.conversation = []
-
-        self.load()
+        self.summary_message, self.conversation = self.repository.load()
 
     def add(self, message):
 
         self.conversation.append(message)
 
-        self.save()
+        self.repository.save(self.summary_message, self.conversation)
 
     def update_summary(self):
 
@@ -85,7 +83,7 @@ Instructions:
 
         self.conversation = recent_messages
 
-        self.save()
+        self.save(self.summary_message, self.conversation)
 
     def get_messages(self):
 
@@ -97,74 +95,3 @@ Instructions:
         messages.extend(self.conversation)
 
         return messages
-
-    def save(self):
-
-        data = {
-            "summary": None,
-            "conversation": []
-        }
-
-        if self.summary_message:
-            data["summary"] = self.summary_message.content
-
-        for msg in self.conversation:
-
-            if isinstance(msg, HumanMessage):
-                msg_type = "human"
-
-            elif isinstance(msg, AIMessage):
-                msg_type = "ai"
-
-            elif isinstance(msg, ToolMessage):
-                msg_type = "tool"
-
-            else:
-                continue
-
-            data["conversation"].append({
-                "type": msg_type,
-                "content": msg.content
-            })
-
-        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
-
-            json.dump(data, f, indent=4)
-
-    def load(self):
-
-        if not os.path.exists(MEMORY_FILE):
-            return
-
-        try:
-
-            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
-
-                raw_data = f.read().strip()
-
-                if not raw_data:
-                    return
-
-                data = json.loads(raw_data)
-
-        except json.JSONDecodeError:
-
-            return
-
-        if data.get("summary"):
-            self.summary_message = SystemMessage(content=data["summary"])
-
-        for msg in data.get("conversation", []):
-
-            if msg["type"] == "human":
-
-                self.conversation.append(HumanMessage(content=msg["content"]))
-
-            elif msg["type"] == "ai":
-
-                self.conversation.append(AIMessage(content=msg["content"]))
-
-            elif msg["type"] == "tool":
-
-                self.conversation.append(ToolMessage(
-                    content=msg["content"], tool_call_id=""))
