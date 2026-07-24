@@ -1,0 +1,37 @@
+{
+    "summary": "Conversation Summary:\nPranav requested a random number between 1 and 100. The AI generated 4.",
+    "conversation": [
+        {
+            "type": "human",
+            "content": "find what info about github username pranav-0209"
+        },
+        {
+            "type": "ai",
+            "content": ""
+        },
+        {
+            "type": "tool",
+            "content": "\nUsername: pranav-0209\nFollowers: 1\nRepositories: 22\nBio: Building things with Java, Spring Boot & React. MTS @ Single Core Labs. Diving into Agentic AI on the side.\n"
+        },
+        {
+            "type": "ai",
+            "content": "Here's the GitHub information for **pranav-0209**:\n\n- **Followers**: 1  \n- **Repositories**: 22  \n- **Bio**: Building things with Java, Spring Boot & React. MTS @ Single Core Labs. Diving into Agentic AI on the side.  \n\nLet me know if you'd like further assistance! \ud83d\ude0a"
+        },
+        {
+            "type": "human",
+            "content": "i am currently learning langchain"
+        },
+        {
+            "type": "ai",
+            "content": "I'm glad you're learning LangChain! It's a fantastic framework for building AI applications. Since I don't have access to LangChain-specific tools or documentation, I can share some beginner-friendly tips or point you to great resources. For example:\n\n- Start with [LangChain's official tutorials](https://python.langchain.com/docs/)\n- Try building a simple chatbot using their `LLMChain` or `ConversationChain`\n- Explore their [community examples](https://github.com/langchain-ai/langchain) for real-world use cases\n\nWould you like help with a specific LangChain task or concept? \ud83d\ude0a"
+        },
+        {
+            "type": "human",
+            "content": "Hi, what was i learning and what is my name?"
+        },
+        {
+            "type": "ai",
+            "content": "You were learning **LangChain**. Your GitHub username is **pranav-0209** \ud83d\ude0a"
+        }
+    ]
+}
