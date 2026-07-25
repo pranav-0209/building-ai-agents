@@ -10,7 +10,7 @@ WINDOW_SIZE = 5
 
 SUMMARY_TRIGGER = 10
 
-MEMORY_FILE = str(Path(__file__).resolve().with_name("memory.json"))
+MEMORY_FOLDER = "memory"
 
 def get_llm():
 

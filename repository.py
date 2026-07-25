@@ -4,10 +4,20 @@ import os
 from langchain_core.messages import (
     HumanMessage, AIMessage, SystemMessage, ToolMessage)
 
-from config import MEMORY_FILE
+from config import MEMORY_FOLDER
 
 
 class MemoryRepository:
+
+    def __init__(self, session_id):
+
+        self.session_id = session_id
+
+        os.makedirs(MEMORY_FOLDER, exist_ok=True)
+
+        self.memory_file = os.path.join(
+            MEMORY_FOLDER, f"{session_id}.json"
+        )
 
     def save(self, summary_message, conversation):
 
@@ -36,17 +46,17 @@ class MemoryRepository:
 
             data["conversation"].append(item)
 
-        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+        with open(self.memory_file, "w", encoding="utf-8") as f:
 
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     def load(self):
 
-        if not os.path.exists(MEMORY_FILE):
+        if not os.path.exists(self.memory_file):
             return None, []
 
         try:
-            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+            with open(self.memory_file, "r", encoding="utf-8") as f:
 
                 data = json.load(f)
 

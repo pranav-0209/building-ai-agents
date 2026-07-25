@@ -13,7 +13,7 @@ tool_map = {
     for tool in TOOLS
 }
 
-memory = MemoryManager()
+memory = MemoryManager(session_id="session_002")
 
 def run_agent(user_input: str):
 
