@@ -10,12 +10,12 @@ llm = get_llm()
 
 class MemoryManager:
 
-    def __init__(self, session_id):
+    def __init__(self, repository):
 
         self.system_message = SystemMessage(
             content="You are a helpful AI assistant. Use tools whenever necessary.")
 
-        self.repository = MemoryRepository(session_id)
+        self.repository = repository
 
         self.summary_message, self.conversation = self.repository.load()
 

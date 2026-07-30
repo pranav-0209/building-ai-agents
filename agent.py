@@ -2,6 +2,7 @@ from langchain_core.messages import (HumanMessage, ToolMessage)
 
 from config import (get_llm)
 from memory import MemoryManager
+from repository import MemoryRepository
 from tools import TOOLS
 
 llm = get_llm()
@@ -13,7 +14,9 @@ tool_map = {
     for tool in TOOLS
 }
 
-memory = MemoryManager(session_id="session_002")
+repository = MemoryRepository(session_id="session_002")
+
+memory = MemoryManager(repository)
 
 def run_agent(user_input: str):
 
