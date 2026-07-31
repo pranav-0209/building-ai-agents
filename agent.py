@@ -3,16 +3,13 @@ from langchain_core.messages import (HumanMessage, ToolMessage)
 from config import (get_llm)
 from memory import MemoryManager
 from repository import MemoryRepository
-from tools import TOOLS
+from tool_registry import ToolRegistry
+
+registry = ToolRegistry()
 
 llm = get_llm()
 
-llm_with_tools = llm.bind_tools(TOOLS)
-
-tool_map = {
-    tool.name: tool
-    for tool in TOOLS
-}
+llm_with_tools = llm.bind_tools(registry.get_tools())
 
 repository = MemoryRepository(session_id="session_002")
 
@@ -37,7 +34,7 @@ def run_agent(user_input: str):
 
         for tool_call in response.tool_calls:
 
-            tool = tool_map.get(tool_call["name"])
+            tool = registry.get_tool(tool_call["name"])
 
             if tool is None:
                 memory.add(

@@ -16,6 +16,31 @@
         {
             "type": "ai",
             "content": "I know you said your name is Alice! However, I don't have the ability to store or remember names. My tools only allow me to check GitHub profiles (with a username) or generate random numbers. Let me know if you'd like help with either of those! 😊"
+        },
+        {
+            "type": "human",
+            "content": "search info about github username - pranav-0209"
+        },
+        {
+            "type": "ai",
+            "content": ""
+        },
+        {
+            "type": "tool",
+            "content": "\nUsername: pranav-0209\nFollowers: 1\nRepositories: 22\nBio: Building things with Java, Spring Boot & React. MTS @ Single Core Labs. Diving into Agentic AI on the side.\n",
+            "tool_call_id": "30f7b277-3558-413e-9770-32cd62ac7eb4"
+        },
+        {
+            "type": "ai",
+            "content": "Here's the GitHub profile information for **pranav-0209**:\n\n- **Followers**: 1  \n- **Repositories**: 22  \n- **Bio**: Building things with Java, Spring Boot & React. MTS @ Single Core Labs. Diving into Agentic AI on the side.  \n\nLet me know if you'd like help with anything else! 😊"
+        },
+        {
+            "type": "human",
+            "content": "what is langchain in one line?"
+        },
+        {
+            "type": "ai",
+            "content": "LangChain is a framework for building applications powered by large language models (LLMs) using modular chains and components."
         }
     ]
 }
