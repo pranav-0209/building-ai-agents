@@ -5,9 +5,10 @@ from langchain_core.messages import (
     HumanMessage, AIMessage, SystemMessage, ToolMessage)
 
 from config import MEMORY_FOLDER
+from interfaces import BaseRepostiory
 
 
-class MemoryRepository:
+class MemoryRepository(BaseRepostiory):
 
     def __init__(self, session_id):
 
