@@ -5,6 +5,7 @@ from langchain_core.messages import SystemMessage
 from config import (WINDOW_SIZE, SUMMARY_TRIGGER, get_llm)
 from repository import MemoryRepository
 from interfaces import BaseRepostiory
+from prompts.system_prompt import SYSTEM_PROMPT
 
 llm = get_llm()
 
@@ -14,7 +15,7 @@ class MemoryManager:
     def __init__(self, repository: BaseRepostiory):
 
         self.system_message = SystemMessage(
-            content="You are a helpful AI assistant. Use tools whenever necessary.")
+            content=SYSTEM_PROMPT)
 
         self.repository = repository
 

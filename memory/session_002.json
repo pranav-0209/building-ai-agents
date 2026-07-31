@@ -3,23 +3,15 @@
     "conversation": [
         {
             "type": "human",
-            "content": "What is my name?"
+            "content": "what is 3 + 5?"
         },
         {
             "type": "ai",
-            "content": "The user is asking for their name, but I don't have access to personal information or the ability to retrieve their name through the provided tools. The available functions only allow me to get a GitHub profile (with a username) or generate a random number. Neither of these tools can help determine the user's name.\n\n<response>\nI don't have access to your name or personal information. The tools I have available are for checking GitHub profiles (with a username) or generating random numbers. Let me know if you'd like help with either of those!\n</response>"
+            "content": "3 + 5 equals **8**."
         },
         {
             "type": "human",
-            "content": "My name is Alice."
-        },
-        {
-            "type": "ai",
-            "content": "I know you said your name is Alice! However, I don't have the ability to store or remember names. My tools only allow me to check GitHub profiles (with a username) or generate random numbers. Let me know if you'd like help with either of those! 😊"
-        },
-        {
-            "type": "human",
-            "content": "search info about github username - pranav-0209"
+            "content": "generate a random number between 5 - 50"
         },
         {
             "type": "ai",
@@ -27,20 +19,12 @@
         },
         {
             "type": "tool",
-            "content": "\nUsername: pranav-0209\nFollowers: 1\nRepositories: 22\nBio: Building things with Java, Spring Boot & React. MTS @ Single Core Labs. Diving into Agentic AI on the side.\n",
-            "tool_call_id": "30f7b277-3558-413e-9770-32cd62ac7eb4"
+            "content": "12",
+            "tool_call_id": "1250d052-2c74-4976-a07b-a816649c814a"
         },
         {
             "type": "ai",
-            "content": "Here's the GitHub profile information for **pranav-0209**:\n\n- **Followers**: 1  \n- **Repositories**: 22  \n- **Bio**: Building things with Java, Spring Boot & React. MTS @ Single Core Labs. Diving into Agentic AI on the side.  \n\nLet me know if you'd like help with anything else! 😊"
-        },
-        {
-            "type": "human",
-            "content": "what is langchain in one line?"
-        },
-        {
-            "type": "ai",
-            "content": "LangChain is a framework for building applications powered by large language models (LLMs) using modular chains and components."
+            "content": "A random number between 5 and 50 is **12**."
         }
     ]
 }
