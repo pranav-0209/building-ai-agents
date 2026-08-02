@@ -10,6 +10,7 @@ PDF_PATH = "data/sample.pdf"
 
 DATABASE_PATH = "database"
 
+COLLECTION_NAME = "pdf_documents"
 
 def get_llm():
 

@@ -27,3 +27,4 @@ __pycache__/
 .DS_Store
 
 database/
+02-rag-pdf-chat/data/
