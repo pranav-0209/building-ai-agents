@@ -1,44 +1,5 @@
-from config import PDF_PATH
-
-from loader import load_pdf
-from splitter import split_documents
-from vector_store import (
-    create_vector_store, load_vector_store, vector_store_exists)
+from vector_store import initialize_vector_store
 from chat import ask_question
-
-
-def initialize_vector_store():
-
-    if vector_store_exists():
-
-        print("Loading existing vector store...")
-
-        return load_vector_store()
-
-    print("No vector store found.")
-    print("Loading PDF...")
-
-    documents = load_pdf(PDF_PATH)
-
-    print(
-        f"Loaded {len(documents)} pages."
-    )
-
-    print("Splitting documents...")
-
-    chunks = split_documents(documents)
-
-    print(
-        f"Created {len(chunks)} chunks."
-    )
-
-    print("Generating embeddings...")
-
-    vector_store = create_vector_store(chunks)
-
-    print("Vector store created.")
-
-    return vector_store
 
 
 def display_sources(documents):
