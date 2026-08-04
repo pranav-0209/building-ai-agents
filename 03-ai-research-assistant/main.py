@@ -1,6 +1,9 @@
 from planner import ResearchPlanner
 from researcher import Researcher
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def main():
 
@@ -26,23 +29,33 @@ def main():
 
     # Step 2: Execute research
 
-    research_results = researcher.research(plan)
+    findings = researcher.research(plan)
 
-    # Step 3: Display collected sources
+    # Step 3: Display analyzed findings
 
-    print("\n\nResearch Results")
-    print("----------------")
+    print("\n\nResearch Findings")
+    print("-----------------")
 
-    for task, results in research_results.items():
+    for index, finding in enumerate(findings, start=1):
 
-        print(f"\nTask: {task}")
+        print(f"\nFinding {index}")
+        print("=" * 40)
 
-        for index, result in enumerate(results, start=1):
+        print(f"\nTask:")
+        print(finding.task)
 
-            print(f"\n  Source {index}")
-            print(f"  Title: {result.title}")
-            print(f"  URL: {result.url}")
-            print(f"  Content: {result.content[:300]}...")
+        print(f"\nSummary:")
+        print(finding.summary)
+
+        print("\nKey Points:")
+
+        for point in finding.key_points:
+            print(f"- {point}")
+
+        print("\nSources:")
+
+        for url in finding.source_urls:
+            print(f"- {url}")
 
 
 if __name__ == "__main__":
