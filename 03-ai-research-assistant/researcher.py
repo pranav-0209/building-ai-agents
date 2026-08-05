@@ -1,3 +1,5 @@
+from copy import error
+
 from schemas import ResearchPlan, SearchResult, ResearchFinding
 from search import WebSearchService
 from analyzer import ResearchAnalyzer
@@ -22,9 +24,19 @@ class Researcher:
                 print(f"No results found for task: {task}")
                 continue
 
-            finding = self.analyzer.analyze(
-                task=task, search_results=search_results)
+            try:
 
-            findings.append(finding)
+                finding = self.analyzer.analyze(
+                    task=task,
+                    search_results=search_results
+                )
+
+                findings.append(finding)
+
+            except Exception as error:
+
+                print(f"Failed to analyze task: {task}")
+                print(f"Error: {error}")
+                print("Skipping this task and continuing...")
 
         return findings

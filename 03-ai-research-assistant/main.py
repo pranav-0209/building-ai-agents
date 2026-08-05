@@ -1,5 +1,7 @@
 from planner import ResearchPlanner
 from researcher import Researcher
+from reporter import ReportGenerator
+from sources import collect_unique_sources
 
 from dotenv import load_dotenv
 
@@ -9,6 +11,7 @@ def main():
 
     planner = ResearchPlanner()
     researcher = Researcher()
+    reporter = ReportGenerator()
 
     print("\nAI Research Assistant")
     print("---------------------")
@@ -31,31 +34,56 @@ def main():
 
     findings = researcher.research(plan)
 
-    # Step 3: Display analyzed findings
+    if not findings:
+        print("\nNo research findings were generated.")
+        return
 
-    print("\n\nResearch Findings")
-    print("-----------------")
+    # Step 3: Generate final report
 
-    for index, finding in enumerate(findings, start=1):
+    print("\nGenerating final research report...")
 
-        print(f"\nFinding {index}")
-        print("=" * 40)
+    report = reporter.generate(
+        question=question,
+        findings=findings
+    )
 
-        print(f"\nTask:")
-        print(finding.task)
+    # Step 4: Collect sources
 
-        print(f"\nSummary:")
-        print(finding.summary)
+    sources = collect_unique_sources(findings)
 
-        print("\nKey Points:")
+    # Step 5: Display report
 
-        for point in finding.key_points:
-            print(f"- {point}")
+    print("\n")
+    print("=" * 60)
+    print(report.title)
+    print("=" * 60)
 
-        print("\nSources:")
+    print("\nSummary")
+    print("-------")
+    print(report.summary)
 
-        for url in finding.source_urls:
-            print(f"- {url}")
+    print("\nKey Findings")
+    print("------------")
+
+    for index, finding in enumerate(
+        report.key_findings,
+        start=1
+    ):
+        print(f"{index}. {finding}")
+
+    print("\nConclusion")
+    print("----------")
+    print(report.conclusion)
+
+    print("\nSources")
+    print("-------")
+
+    for index, source in enumerate(
+        sources,
+        start=1
+    ):
+        print(f"[{index}] {source.title}")
+        print(f"    {source.url}")
 
 
 if __name__ == "__main__":

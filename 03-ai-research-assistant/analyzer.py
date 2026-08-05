@@ -1,7 +1,10 @@
+from copy import error
+
 from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel
 
 from config import get_llm
-from schemas import SearchResult, ResearchFinding
+from schemas import SearchResult, ResearchFinding, Source
 
 
 SYSTEM_PROMPT = """
@@ -29,13 +32,21 @@ Rules:
 """
 
 
+class FindingAnalysis(BaseModel):
+    task: str
+
+    summary: str
+
+    key_points: list[str]
+
+
 class ResearchAnalyzer:
 
     def __init__(self):
 
         llm = get_llm()
 
-        self.structured_llm = llm.with_structured_output(ResearchFinding)
+        self.structured_llm = llm.with_structured_output(FindingAnalysis)
 
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", SYSTEM_PROMPT),
@@ -58,14 +69,42 @@ Analyze the sources and produce the research finding.
 
     def analyze(self, task: str, search_results: list[SearchResult]) -> ResearchFinding:
 
-        sources = self._format_sources(search_results)
+        sources_text = self._format_sources(search_results)
+        max_attempts = 2
 
-        finding = self.chain.invoke({
-            "task": task,
-            "sources": sources
-        })
+        for attempt in range(1, max_attempts + 1):
 
-        return finding
+            try:
+
+                analysis = self.chain.invoke({
+                    "task": task,
+                    "sources": sources_text
+                })
+
+                sources = [
+                    Source(
+                        title=result.title,
+                        url=result.url
+                    )
+                    for result in search_results
+                ]
+
+                return ResearchFinding(
+                    task=analysis.task,
+                    summary=analysis.summary,
+                    key_points=analysis.key_points,
+                    sources=sources
+                )
+
+            except Exception as error:
+
+                print(
+                    f"Analysis attempt {attempt} failed: {error}"
+                )
+
+                if attempt == max_attempts:
+                    raise
+
 
     def _format_sources(self, search_results: list[SearchResult]) -> str:
 
@@ -82,7 +121,7 @@ URL:
 {result.url}
 
 Content:
-{result.content}
+{result.content[:4000]}
 """
             formatted_sources.append(formatted_source)
 
