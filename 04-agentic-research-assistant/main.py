@@ -8,7 +8,7 @@ def main():
 
     initial_state = {
         "question": question,
-        "plan": [],
+        "plan": None,
         "search_status": ""
     }
 

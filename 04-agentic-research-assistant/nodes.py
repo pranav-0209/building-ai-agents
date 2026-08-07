@@ -1,4 +1,7 @@
+from planner import ResearchPlanner
 from state import ResearchState
+
+planner = ResearchPlanner()
 
 
 def planner_node(state: ResearchState):
@@ -9,15 +12,12 @@ def planner_node(state: ResearchState):
 
     print(f"Planning research for: {question}")
 
-    plan = [
-        "Research the main concepts related to the topic",
-        "Find recent information about the topic",
-        "Identify important implications",
-    ]
+    plan = planner.create_plan(question)
 
     return {
         "plan": plan
     }
+
 
 def search_node(state: ResearchState):
 
@@ -25,11 +25,15 @@ def search_node(state: ResearchState):
 
     plan = state["plan"]
 
-    print("Research tasks:")
+    if plan is None:
+        raise ValueError("Research plan is missing.")
 
-    for index, task in enumerate(plan, start=1):
+    print(f"\nResearch topic: {plan.topic}")
+    print("\nResearch tasks:")
+
+    for index, task in enumerate(plan.tasks, start=1):
         print(f"{index}. {task}")
 
     return {
-        "search_status": "Search completed"
+        "search_status": "Search ready"
     }
