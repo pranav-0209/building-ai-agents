@@ -1,4 +1,6 @@
 langgraph
 langchain
 langchain-ollama
+langchain-tavily
 pydantic
+python-dotenv

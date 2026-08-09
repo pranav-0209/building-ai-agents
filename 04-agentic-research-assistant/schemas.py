@@ -9,3 +9,8 @@ class ResearchPlan(BaseModel):
     tasks: list[str] = Field(
         description="A list of focused research tasks needed to investigate the topic"
     )
+
+class SearchResult(BaseModel):
+    title: str
+    url: str
+    content: str

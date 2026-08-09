@@ -1,12 +1,12 @@
 from planner import ResearchPlanner
+from search import WebSearchService
 from state import ResearchState
 
 planner = ResearchPlanner()
+search_service = WebSearchService()
 
 
 def planner_node(state: ResearchState):
-
-    print("\n--- PLANNER NODE ---")
 
     question = state["question"]
 
@@ -21,19 +21,17 @@ def planner_node(state: ResearchState):
 
 def search_node(state: ResearchState):
 
-    print("\n--- SEARCH NODE ---")
-
     plan = state["plan"]
 
     if plan is None:
         raise ValueError("Research plan is missing.")
 
-    print(f"\nResearch topic: {plan.topic}")
-    print("\nResearch tasks:")
+    task = plan.tasks[state["current_task_index"]]
 
-    for index, task in enumerate(plan.tasks, start=1):
-        print(f"{index}. {task}")
+    print(f"\nSearching:\n{task}")
+
+    search_results = search_service.search_web(task)
 
     return {
-        "search_status": "Search ready"
+        "current_search_results": search_results
     }
