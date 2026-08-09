@@ -9,7 +9,10 @@ def main():
     initial_state = {
         "question": question,
         "plan": None,
-        "search_status": ""
+        "current_task_index": 0,
+        "current_search_results": [],
+        "findings": [],
+        "report": None,
     }
 
     final_state = graph.invoke(initial_state)
