@@ -1,37 +1,41 @@
-from planner import ResearchPlanner
-from search import WebSearchService
+from container import ApplicationContainer
 from state import ResearchState
 
-planner = ResearchPlanner()
-search_service = WebSearchService()
+
+def planner_node(container: ApplicationContainer):
+
+    def node(state: ResearchState):
+
+        question = state["question"]
+
+        print(f"Planning research for: {question}")
+
+        plan = container.planner.create_plan(question)
+
+        return {
+            "plan": plan
+        }
+
+    return node
 
 
-def planner_node(state: ResearchState):
+def search_node(container: ApplicationContainer):
 
-    question = state["question"]
+    def node(state: ResearchState):
 
-    print(f"Planning research for: {question}")
+        plan = state["plan"]
 
-    plan = planner.create_plan(question)
+        if plan is None:
+            raise ValueError("Research plan is missing.")
 
-    return {
-        "plan": plan
-    }
+        task = plan.tasks[state["current_task_index"]]
 
+        print(f"\nSearching:\n{task}")
 
-def search_node(state: ResearchState):
+        search_results = container.search.search_web(task)
 
-    plan = state["plan"]
+        return {
+            "current_search_results": search_results
+        }
 
-    if plan is None:
-        raise ValueError("Research plan is missing.")
-
-    task = plan.tasks[state["current_task_index"]]
-
-    print(f"\nSearching:\n{task}")
-
-    search_results = search_service.search_web(task)
-
-    return {
-        "current_search_results": search_results
-    }
+    return node
