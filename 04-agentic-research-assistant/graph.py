@@ -2,7 +2,7 @@ from langgraph.graph import StateGraph, START, END
 
 from container import ApplicationContainer
 from state import ResearchState
-from nodes import (planner_node, route_next_task, search_node, analyzer_node)
+from nodes import (evaluator_node, planner_node, route_next_task, search_node, analyzer_node)
 
 
 def build_graph():
@@ -14,18 +14,11 @@ def build_graph():
     graph_builder.add_node("planner", planner_node(container))
     graph_builder.add_node("search", search_node(container))
     graph_builder.add_node("analyzer", analyzer_node(container))
+    graph_builder.add_node("evaluator",evaluator_node(container))
 
     graph_builder.add_edge(START, "planner")
     graph_builder.add_edge("planner", "search")
     graph_builder.add_edge("search", "analyzer")
-    graph_builder.add_edge("analyzer", "next_task")
-    graph_builder.add_conditional_edges(
-    "next_task",
-    route_next_task,
-    {
-        "continue": "search",
-        "finish": END,
-    },
-)
-
+    graph_builder.add_edge("analyzer","evaluator")
+    graph_builder.add_edge("evaluator", END)
     return graph_builder.compile()

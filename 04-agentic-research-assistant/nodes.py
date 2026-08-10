@@ -1,6 +1,6 @@
 from container import ApplicationContainer
 from state import ResearchState
-from schemas import ResearchFinding
+from schemas import ResearchFinding, ResearchDecision
 
 
 def planner_node(container: ApplicationContainer):
@@ -96,3 +96,38 @@ def route_next_task(state: ResearchState):
         return "continue"
 
     return "finish"
+
+def evaluator_node(container: ApplicationContainer):
+
+    def node(state: ResearchState):
+
+        if not state["findings"]:
+            raise ValueError(
+                "No findings available."
+            )
+
+        finding = state["findings"][-1]
+
+        evaluation = container.evaluator.evaluate(
+            finding
+        )
+
+        print()
+
+        print("Evaluation")
+
+        print("----------------")
+
+        print(
+            f"Sufficient: {evaluation.sufficient}"
+        )
+
+        print(
+            f"Reason: {evaluation.reasoning}"
+        )
+
+        return {
+            "evaluation": evaluation
+        }
+
+    return node
