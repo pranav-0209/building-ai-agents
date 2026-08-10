@@ -10,7 +10,31 @@ class ResearchPlan(BaseModel):
         description="A list of focused research tasks needed to investigate the topic"
     )
 
+
 class SearchResult(BaseModel):
+
     title: str
+
     url: str
+    
     content: str
+
+
+class FindingAnalysis(BaseModel):
+
+    task: str
+
+    summary: str
+
+    key_points: list[str]
+
+
+class ResearchFinding(BaseModel):
+
+    task: str
+
+    summary: str
+
+    key_points: list[str]
+
+    sources: list[SearchResult]

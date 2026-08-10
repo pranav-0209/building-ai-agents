@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from schemas import ResearchPlan, SearchResult
+from schemas import ResearchPlan, SearchResult, ResearchFinding
 class ResearchState(TypedDict):
     
     question: str
@@ -11,6 +11,6 @@ class ResearchState(TypedDict):
 
     current_search_results: list[SearchResult]
 
-    findings: list
+    findings: list[ResearchFinding]
 
     report: str | None
