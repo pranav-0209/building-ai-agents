@@ -41,6 +41,7 @@ def search_node(container: ApplicationContainer):
 
     return node
 
+
 def analyzer_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
@@ -69,6 +70,29 @@ def analyzer_node(container: ApplicationContainer):
 
         return {
             "findings": findings,
+            "current_task_index": state["current_task_index"] + 1,
         }
 
     return node
+
+
+def next_task_node(container: ApplicationContainer):
+
+    def node(state: ResearchState):
+
+        return state
+
+    return node
+
+
+def route_next_task(state: ResearchState):
+
+    plan = state["plan"]
+
+    if plan is None:
+        raise ValueError("Research plan missing.")
+
+    if state["current_task_index"] < len(plan.tasks):
+        return "continue"
+
+    return "finish"
