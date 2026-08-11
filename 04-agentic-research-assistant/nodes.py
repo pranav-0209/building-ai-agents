@@ -1,6 +1,20 @@
 from container import ApplicationContainer
 from state import ResearchState
-from schemas import ResearchFinding, ResearchDecision
+from schemas import ResearchFinding
+
+
+def get_plan(state: ResearchState):
+    plan = state["plan"]
+
+    if plan is None:
+        raise ValueError("Research plan is missing.")
+
+    return plan
+
+
+def get_current_task(state: ResearchState):
+    plan = get_plan(state)
+    return plan.tasks[state["current_task_index"]]
 
 
 def planner_node(container: ApplicationContainer):
@@ -9,12 +23,12 @@ def planner_node(container: ApplicationContainer):
 
         question = state["question"]
 
-        print(f"Planning research for: {question}")
+        print(f"\nPlanning research for:\n{question}")
 
         plan = container.planner.create_plan(question)
 
         return {
-            "plan": plan
+            "plan": plan,
         }
 
     return node
@@ -24,19 +38,14 @@ def search_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
 
-        plan = state["plan"]
-
-        if plan is None:
-            raise ValueError("Research plan is missing.")
-
-        task = plan.tasks[state["current_task_index"]]
+        task = get_current_task(state)
 
         print(f"\nSearching:\n{task}")
 
         search_results = container.search.search_web(task)
 
         return {
-            "current_search_results": search_results
+            "current_search_results": search_results,
         }
 
     return node
@@ -46,12 +55,7 @@ def analyzer_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
 
-        plan = state["plan"]
-
-        if plan is None:
-            raise ValueError("Research plan missing.")
-
-        task = plan.tasks[state["current_task_index"]]
+        task = get_current_task(state)
 
         analysis = container.analyzer.analyze(
             task,
@@ -70,64 +74,51 @@ def analyzer_node(container: ApplicationContainer):
 
         return {
             "findings": findings,
-            "current_task_index": state["current_task_index"] + 1,
         }
 
     return node
 
 
-def next_task_node(container: ApplicationContainer):
+def evaluator_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
 
-        return state
+        finding = state["findings"][-1]
+
+        evaluation = container.evaluator.evaluate(finding)
+
+        print("\nEvaluation")
+        print("----------------")
+        print(f"Sufficient : {evaluation.sufficient}")
+        print(f"Reason      : {evaluation.reasoning}")
+
+        return {}
+
+    return node
+
+
+def advance_task_node(container: ApplicationContainer):
+
+    def node(state: ResearchState):
+
+        next_index = state["current_task_index"] + 1
+
+        print(
+            f"\nCompleted task {next_index}"
+        )
+
+        return {
+            "current_task_index": next_index,
+        }
 
     return node
 
 
 def route_next_task(state: ResearchState):
 
-    plan = state["plan"]
-
-    if plan is None:
-        raise ValueError("Research plan missing.")
+    plan = get_plan(state)
 
     if state["current_task_index"] < len(plan.tasks):
         return "continue"
 
     return "finish"
-
-def evaluator_node(container: ApplicationContainer):
-
-    def node(state: ResearchState):
-
-        if not state["findings"]:
-            raise ValueError(
-                "No findings available."
-            )
-
-        finding = state["findings"][-1]
-
-        evaluation = container.evaluator.evaluate(
-            finding
-        )
-
-        print()
-
-        print("Evaluation")
-
-        print("----------------")
-
-        print(
-            f"Sufficient: {evaluation.sufficient}"
-        )
-
-        print(
-            f"Reason: {evaluation.reasoning}"
-        )
-
-        return {
-            "evaluation": evaluation
-        }
-
-    return node
