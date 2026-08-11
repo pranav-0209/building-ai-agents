@@ -122,3 +122,20 @@ def route_next_task(state: ResearchState):
         return "continue"
 
     return "finish"
+
+def report_node(container: ApplicationContainer):
+
+    def node(state: ResearchState):
+
+        print("\nResearch Completed")
+        print("=" * 60)
+
+        for index, finding in enumerate(state["findings"], start=1):
+
+            print(f"\nFinding {index}")
+            print(f"Task: {finding.task}")
+            print(f"Summary: {finding.summary}")
+
+        return {}
+
+    return node
