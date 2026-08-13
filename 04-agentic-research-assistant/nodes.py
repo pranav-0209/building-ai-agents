@@ -17,6 +17,19 @@ def get_current_task(state: ResearchState):
     return plan.tasks[state["current_task_index"]]
 
 
+def route_after_evaluation(state: ResearchState):
+
+    finding = state["current_finding"]
+
+    if finding is None:
+        return "retry"
+
+    if finding.is_sufficient:
+        return "advance"
+
+    return "retry"
+
+
 def planner_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
@@ -69,11 +82,8 @@ def analyzer_node(container: ApplicationContainer):
             sources=state["current_search_results"],
         )
 
-        findings = list(state["findings"])
-        findings.append(finding)
-
         return {
-            "findings": findings,
+            "current_finding": finding,
         }
 
     return node
@@ -83,7 +93,10 @@ def evaluator_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
 
-        finding = state["findings"][-1]
+        finding = state["current_finding"]
+
+        if finding is None:
+            raise ValueError("Current finding is missing.")
 
         evaluation = container.evaluator.evaluate(finding)
 
@@ -92,7 +105,11 @@ def evaluator_node(container: ApplicationContainer):
         print(f"Sufficient : {evaluation.sufficient}")
         print(f"Reason      : {evaluation.reasoning}")
 
-        return {}
+        finding.is_sufficient = evaluation.sufficient
+
+        return {
+            "current_finding": finding,
+        }
 
     return node
 
@@ -101,13 +118,21 @@ def advance_task_node(container: ApplicationContainer):
 
     def node(state: ResearchState):
 
+        finding = state["current_finding"]
+
+        if finding is None:
+            raise ValueError("Current finding is missing.")
+
+        findings = list(state["findings"])
+        findings.append(finding)
+
         next_index = state["current_task_index"] + 1
 
-        print(
-            f"\nCompleted task {next_index}"
-        )
+        print(f"\nCompleted task {next_index}")
 
         return {
+            "findings": findings,
+            "current_finding": None,
             "current_task_index": next_index,
         }
 

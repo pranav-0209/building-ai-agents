@@ -6,6 +6,7 @@ from state import ResearchState
 
 from nodes import (
     planner_node,
+    route_after_evaluation,
     search_node,
     analyzer_node,
     evaluator_node,
@@ -41,7 +42,14 @@ def build_graph():
 
     builder.add_edge("analyzer","evaluator")
 
-    builder.add_edge("evaluator","advance")
+    builder.add_conditional_edges(
+    "evaluator",
+    route_after_evaluation,
+    {
+        "retry": "search",
+        "advance": "advance",
+    },
+)
 
     builder.add_conditional_edges(
         "advance",
