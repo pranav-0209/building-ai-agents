@@ -14,6 +14,7 @@ def main():
         "question": question,
         "plan": None,
         "current_task_index": 0,
+        "current_finding": None,
         "current_search_results": [],
         "findings": [],
         "retry_count": 0,

@@ -39,6 +39,11 @@ class ResearchFinding(BaseModel):
 
     sources: list[SearchResult]
 
+    is_sufficient: bool = Field(
+        default=False,
+        description="Whether the finding's evidence sufficiently answers its task.",
+    )
+
 class ResearchDecision(BaseModel):
     sufficient: bool = Field(
         description="Whether the available evidence is sufficient to answer the research task."

@@ -1,6 +1,7 @@
 from container import ApplicationContainer
 from state import ResearchState
 from schemas import ResearchFinding
+from config import MAX_RETRIES
 
 
 def get_plan(state: ResearchState):
@@ -134,6 +135,7 @@ def advance_task_node(container: ApplicationContainer):
             "findings": findings,
             "current_finding": None,
             "current_task_index": next_index,
+            "retry_count": 0,
         }
 
     return node
@@ -164,3 +166,24 @@ def report_node(container: ApplicationContainer):
         return {}
 
     return node
+
+
+def retry_node(state: ResearchState):
+
+    retry_count = state["retry_count"] + 1
+
+    print(f"\nRetry attempt {retry_count}")
+
+    return {
+        "retry_count": retry_count,
+    }
+
+def route_after_retry(state: ResearchState):
+
+    if state["retry_count"] >= MAX_RETRIES:
+
+        print("\nMaximum retries reached. Moving to next task.")
+
+        return "advance"
+
+    return "search"

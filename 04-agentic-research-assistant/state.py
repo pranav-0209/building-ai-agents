@@ -9,6 +9,8 @@ class ResearchState(TypedDict):
 
     current_task_index: int
 
+    current_finding: ResearchFinding | None
+
     current_search_results: list[SearchResult]
 
     findings: list[ResearchFinding]
