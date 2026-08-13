@@ -16,6 +16,7 @@ def main():
         "current_task_index": 0,
         "current_search_results": [],
         "findings": [],
+        "retry_count": 0,
         "report": None,
     }
 

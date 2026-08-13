@@ -8,4 +8,5 @@ def get_llm():
     return ChatOllama(
         model=MODEL_NAME,
         temperature=0,
+        reasoning=False,
     )

@@ -8,11 +8,7 @@ class ResearchEvaluator:
 
     def __init__(self):
 
-        llm = get_llm()
-
-        self.structured_llm = llm.with_structured_output(
-            ResearchDecision
-        )
+        self.llm = get_llm()
 
         self.prompt = ChatPromptTemplate.from_messages(
             [
@@ -32,6 +28,11 @@ insufficient.
 Never invent missing information.
 
 Provide a brief explanation for your decision.
+
+Respond in plain text using this format:
+
+Sufficient: yes or no
+Reasoning: <short explanation>
 """,
                 ),
                 (
@@ -57,14 +58,42 @@ Number of Sources:
             ]
         )
 
-        self.chain = self.prompt | self.structured_llm
+        self.chain = self.prompt | self.llm
+
+    def _parse_decision(self, text: str) -> ResearchDecision:
+
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+
+        sufficient_line = next(
+            (line for line in lines if line.lower().startswith("sufficient:")),
+            "",
+        )
+
+        reasoning_line = next(
+            (line for line in lines if line.lower().startswith("reasoning:")),
+            "",
+        )
+
+        sufficient_text = text.lower()
+
+        if ":" in sufficient_line:
+            sufficient_text = sufficient_line.split(":", 1)[1].strip().lower()
+
+        sufficient = sufficient_text.startswith(("yes", "true", "1", "sufficient"))
+
+        reasoning = reasoning_line.split(":", 1)[1].strip() if ":" in reasoning_line else text.strip()
+
+        return ResearchDecision(
+            sufficient=sufficient,
+            reasoning=reasoning,
+        )
 
     def evaluate(
         self,
         finding: ResearchFinding,
     ) -> ResearchDecision:
 
-        return self.chain.invoke(
+        response = self.chain.invoke(
             {
                 "task": finding.task,
                 "summary": finding.summary,
@@ -72,3 +101,10 @@ Number of Sources:
                 "source_count": len(finding.sources),
             }
         )
+
+        content = getattr(response, "content", str(response)).strip()
+
+        if not content:
+            raise RuntimeError("Evaluator returned an empty response.")
+
+        return self._parse_decision(content)
