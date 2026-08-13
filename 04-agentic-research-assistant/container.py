@@ -1,4 +1,5 @@
 from planner import ResearchPlanner
+from reporter import ReportGenerator
 from search import WebSearchService
 from analyzer import ResearchAnalyzer
 from evaluator import ResearchEvaluator
@@ -11,3 +12,4 @@ class ApplicationContainer:
         self.search = WebSearchService()
         self.analyzer = ResearchAnalyzer()
         self.evaluator = ResearchEvaluator()
+        self.report_generator = ReportGenerator()

@@ -38,6 +38,8 @@ def build_graph():
 
     builder.add_node("retry",retry_node)
 
+    builder.add_node("report",report_node)
+
     builder.add_edge(START,"planner")
 
     builder.add_edge("planner","search")

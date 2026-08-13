@@ -55,7 +55,12 @@ class ResearchDecision(BaseModel):
 
 
 class ResearchReport(BaseModel):
-    title: str
-    summary: str
-    key_findings: list[str]
-    conclusion: str
+    title: str = Field(description="Title of the report")
+
+    summary: str = Field(description="Overall research summary")
+
+    key_findings: list[str] = Field(
+        description="Most important findings"
+    )
+    
+    conclusion: str = Field(description="Final conclusion")

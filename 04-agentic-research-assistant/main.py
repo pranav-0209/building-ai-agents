@@ -21,10 +21,23 @@ def main():
         "report": None,
     }
 
-    final_state = graph.invoke(initial_state)
+    result = graph.invoke(initial_state)
 
-    print("\n--- FINAL STATE ---")
-    print(final_state)
+    report = result["report"]
+
+    print("\n" + "=" * 80)
+    print(report.title)
+    print("=" * 80)
+
+    print("\nSummary")
+    print(report.summary)
+
+    print("\nKey Findings")
+    for finding in report.key_findings:
+        print(f"- {finding}")
+
+    print("\nConclusion")
+    print(report.conclusion)
 
 
 if __name__ == "__main__":

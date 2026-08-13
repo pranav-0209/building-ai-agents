@@ -1,4 +1,5 @@
 from container import ApplicationContainer
+import container
 from state import ResearchState
 from schemas import ResearchFinding
 from config import MAX_RETRIES
@@ -148,7 +149,7 @@ def route_next_task(state: ResearchState):
     if state["current_task_index"] < len(plan.tasks):
         return "continue"
 
-    return "finish"
+    return "report"
 
 def report_node(container: ApplicationContainer):
 
@@ -187,3 +188,16 @@ def route_after_retry(state: ResearchState):
         return "advance"
 
     return "search"
+
+def report_node(state: ResearchState):
+
+    print("\nGenerating final report...")
+
+    report = container.report_generator.generate(
+        question=state["question"],
+        findings=state["findings"],
+    )
+
+    return {
+        "report": report,
+    }
